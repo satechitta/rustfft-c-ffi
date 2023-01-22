@@ -3,10 +3,10 @@ use std::ptr;
 use std::slice;
 use std::sync::Arc;
 
-pub struct RustFftCFfi {
+pub struct RustFftC {
     fft: Arc<dyn Fft<f32>>,
 }
-impl RustFftCFfi {
+impl RustFftC {
     fn new(num: usize, is_ifft: bool) -> Self {
         let mut planner: FftPlanner<f32> = FftPlanner::new();
         let fft: Arc<dyn Fft<f32>> = if is_ifft == false {
@@ -14,7 +14,7 @@ impl RustFftCFfi {
         } else {
             planner.plan_fft_inverse(num)
         };
-        RustFftCFfi { fft: fft }
+        RustFftC { fft: fft }
     }
 
     fn run(&mut self, buffer: &mut Vec<Complex<f32>>) {
@@ -23,12 +23,12 @@ impl RustFftCFfi {
 }
 
 #[no_mangle]
-pub extern "C" fn rustfft_new(len: usize, is_ifft: bool) -> *mut RustFftCFfi {
-    Box::into_raw(Box::new(RustFftCFfi::new(len, is_ifft)))
+pub extern "C" fn rustfft_new(len: usize, is_ifft: bool) -> *mut RustFftC {
+    Box::into_raw(Box::new(RustFftC::new(len, is_ifft)))
 }
 
 #[no_mangle]
-pub extern "C" fn rustfft_free(ptr: *mut RustFftCFfi) {
+pub extern "C" fn rustfft_free(ptr: *mut RustFftC) {
     if ptr.is_null() {
         return;
     }
@@ -39,12 +39,12 @@ pub extern "C" fn rustfft_free(ptr: *mut RustFftCFfi) {
 
 #[no_mangle]
 pub extern "C" fn rustfft_run(
-    ptr: *mut RustFftCFfi,
+    ptr: *mut RustFftC,
     re_list: *mut f32,
     im_list: *mut f32,
     len: usize,
 ) {
-    let rustfft_c_ffi: &mut RustFftCFfi = unsafe {
+    let rustfft_c_ffi: &mut RustFftC = unsafe {
         assert!(!ptr.is_null());
         &mut *ptr
     };

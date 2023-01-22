@@ -4,14 +4,14 @@
 #include <ostream>
 #include <new>
 
-struct RustFftCFfi;
+struct RustFftC;
 
 extern "C" {
 
-RustFftCFfi *rustfft_new(uintptr_t len, bool is_ifft);
+RustFftC *rustfft_new(uintptr_t len, bool is_ifft);
 
-void rustfft_free(RustFftCFfi *ptr);
+void rustfft_free(RustFftC *ptr);
 
-void rustfft_run(RustFftCFfi *ptr, float *re_list, float *im_list, uintptr_t len);
+void rustfft_run(RustFftC *ptr, float *re_list, float *im_list, uintptr_t len);
 
 } // extern "C"
