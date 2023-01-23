@@ -10,7 +10,7 @@ extern "C" {
 
 RustFftC *rustfft_new(uintptr_t len, bool is_ifft);
 
-void rustfft_free(RustFftC *ptr);
+void rustfft_delete(RustFftC *ptr);
 
 void rustfft_run(RustFftC *ptr, float *re_list, float *im_list, uintptr_t len);
 

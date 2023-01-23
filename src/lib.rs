@@ -28,7 +28,7 @@ pub extern "C" fn rustfft_new(len: usize, is_ifft: bool) -> *mut RustFftC {
 }
 
 #[no_mangle]
-pub extern "C" fn rustfft_free(ptr: *mut RustFftC) {
+pub extern "C" fn rustfft_delete(ptr: *mut RustFftC) {
     if ptr.is_null() {
         return;
     }
