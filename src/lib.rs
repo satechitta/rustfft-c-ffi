@@ -7,12 +7,12 @@ pub struct RustFftC {
     fft: Arc<dyn Fft<f32>>,
 }
 impl RustFftC {
-    fn new(num: usize, is_ifft: bool) -> Self {
+    fn new(fft_size: usize, is_ifft: bool) -> Self {
         let mut planner: FftPlanner<f32> = FftPlanner::new();
         let fft: Arc<dyn Fft<f32>> = if is_ifft == false {
-            planner.plan_fft_forward(num)
+            planner.plan_fft_forward(fft_size)
         } else {
-            planner.plan_fft_inverse(num)
+            planner.plan_fft_inverse(fft_size)
         };
         RustFftC { fft: fft }
     }
@@ -86,41 +86,41 @@ pub extern "C" fn rustfft_run(
 
 #[test]
 fn test_rustfft_c_ffi() {
-    let num = 256;
+    let fft_size = 256;
     let mut buffer = vec![
         Complex {
             re: 1.0f32,
             im: 0.0f32
         };
-        num
+        fft_size
     ];
 
     // run the c ffi rustfft code
-    let rustfft_c_ffi = rustfft_new(num, false);
-    let mut buffer_re = vec![0.0f32; num];
-    let mut buffer_im = vec![0.0f32; num];
+    let rustfft_c_ffi = rustfft_new(fft_size, false);
+    let mut buffer_re = vec![0.0f32; fft_size];
+    let mut buffer_im = vec![0.0f32; fft_size];
     for (i, val) in buffer.iter().enumerate() {
         buffer_re[i] = val.re;
         buffer_im[i] = val.im;
     }
     let mut buffer_re_ptr = buffer_re[..].as_mut_ptr(); // need mut in rustfft_run
     let mut buffer_im_ptr = buffer_im[..].as_mut_ptr(); // need mut in rustfft_run
-    rustfft_run(rustfft_c_ffi, buffer_re_ptr, buffer_im_ptr, num);
+    rustfft_run(rustfft_c_ffi, buffer_re_ptr, buffer_im_ptr, fft_size);
     buffer_re = unsafe {
         assert!(!buffer_re_ptr.is_null());
-        slice::from_raw_parts(buffer_re_ptr, num as usize).to_vec()
+        slice::from_raw_parts(buffer_re_ptr, fft_size as usize).to_vec()
     };
     buffer_im = unsafe {
         assert!(!buffer_im_ptr.is_null());
-        slice::from_raw_parts(buffer_im_ptr, num as usize).to_vec()
+        slice::from_raw_parts(buffer_im_ptr, fft_size as usize).to_vec()
     };
 
     // run the original rustffi code
     let mut planner = FftPlanner::new();
-    let fft = planner.plan_fft_forward(num);
+    let fft = planner.plan_fft_forward(fft_size);
     fft.process(&mut buffer);
-    let mut original_fft_buffer_re = vec![0.0f32; num];
-    let mut original_fft_buffer_im = vec![0.0f32; num];
+    let mut original_fft_buffer_re = vec![0.0f32; fft_size];
+    let mut original_fft_buffer_im = vec![0.0f32; fft_size];
     for (i, val) in buffer.iter().enumerate() {
         original_fft_buffer_re[i] = val.re;
         original_fft_buffer_im[i] = val.im;
