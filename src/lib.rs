@@ -9,7 +9,7 @@ pub struct RustFftC {
 }
 impl RustFftC {
     /// Constructs a new `RustFftC` instance.
-    /// 
+    ///
     /// A new instance is initialized by given `fft_size` which is applicable both the power-of-two case and the other cases.  
     /// If `is_ifft` boolean flag is true, the instance is created to work an inverse FFT.
     fn new(fft_size: usize, is_ifft: bool) -> Self {
@@ -29,17 +29,16 @@ impl RustFftC {
 }
 
 /// FFI interface to initialize `RustFftC` is called by C/C++.
-/// 
+///
 /// Returns a pointer of a `RustFftC` object which is initialized by given `fft_size`
 /// If `is_ifft` boolean flag is true, the `RustFftC` is created to work an inverse FFT.
 #[no_mangle]
 pub extern "C" fn rustfft_new(fft_size: usize, is_ifft: bool) -> *mut RustFftC {
-    // need catch if fft_size < 0.
     Box::into_raw(Box::new(RustFftC::new(fft_size, is_ifft)))
 }
 
 /// FFI interface to delete `RustFftC` is called by C/C++.
-/// 
+///
 /// a pointer of RustFftC object argument is deleted by calling the API.
 #[no_mangle]
 pub extern "C" fn rustfft_delete(ptr: *mut RustFftC) {
@@ -52,11 +51,11 @@ pub extern "C" fn rustfft_delete(ptr: *mut RustFftC) {
 }
 
 /// FFI interface to compute FFT using a pointer of `RustFftC` set is called by C/C++.
-/// 
+///
 /// `re_list` is a real number of complex, `im_list` is a imaginary number of complex.
 /// C/C++ side is not requred a dedicated type represented complex number.
 /// The both lists need to have `fft_size` elements.
-/// The value computed FFT replaces `re_list` and `im_list` arguments. 
+/// The value computed FFT replaces `re_list` and `im_list` arguments.
 #[no_mangle]
 pub extern "C" fn rustfft_run(
     ptr: *mut RustFftC,
@@ -64,7 +63,6 @@ pub extern "C" fn rustfft_run(
     im_list: *mut f32,
     fft_size: usize,
 ) {
-    // need exception handling instead of assert.
     let rustfft_c_ffi: &mut RustFftC = unsafe {
         assert!(!ptr.is_null());
         &mut *ptr
