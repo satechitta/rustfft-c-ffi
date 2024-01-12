@@ -11,7 +11,15 @@ project(RustfftCSample LANGUAGES CXX)
 ############################################################
 # Generate the static Rust library from Cargo.toml using corrosion
 # the corrosion project: https://github.com/corrosion-rs/corrosion
-find_package(Corrosion REQUIRED)
+include(FetchContent)
+FetchContent_Declare(
+    Corrosion
+    GIT_REPOSITORY https://github.com/corrosion-rs/corrosion.git
+    GIT_TAG v0.4
+)
+FetchContent_MakeAvailable(Corrosion)
+
+# Import targets defined in a package or workspace manifest `Cargo.toml` file
 corrosion_import_crate(MANIFEST_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/Cargo.toml)
 
 ############################################################
