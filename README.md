@@ -16,6 +16,21 @@ The project is structured as follows:
 - `sample/`: Contains a sample C++ application that uses the `rustfft` wrapper.
 - `test/`: Contains tests for the `rustfft` wrapper, including comparisons with FFTW.
 
+## Prerequisites
+
+Before building the project, please ensure that the following tools are installed:
+
+- [Rust](https://www.rust-lang.org/tools/install): The Rust programming language, which is used to write the `rustfft` wrapper. You can install Rust using the `rustup` toolchain installer.
+
+- [CMake](https://cmake.org/download/): A cross-platform build system. This project uses CMake to build the C++ sample application and tests. Please ensure that you have CMake version 3.15 or higher installed.
+
+You can check if these tools are installed and find their versions by running the following commands in your terminal:
+
+```sh
+rustc --version
+cmake --version
+```
+
 ## Building
 
 This project uses both Cargo (for the Rust code) and CMake (for the C++ code). To build the project, you can use the following commands:
