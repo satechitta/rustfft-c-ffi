@@ -1,3 +1,20 @@
+//! # RustFftC
+//!
+//! This module provides a wrapper around the `rustfft` library, specifically for performing
+//! Fast Fourier Transform (FFT) operations. The main struct provided by this module is `RustFftC`.
+//!
+//! `RustFftC` is a struct that encapsulates the FFT functionality provided by the `rustfft` library.
+//! It provides methods for creating new instances (`new`) and running FFT computations (`run`).
+//!
+//! The `new` method takes two parameters: `fft_size` and `is_ifft`. `fft_size` determines the size of the FFT
+//! and `is_ifft` is a boolean flag that, when true, creates an instance for performing inverse FFT operations.
+//!
+//! The `run` method takes a mutable reference to a `Vec<Complex<f32>>` and performs the FFT operation in-place.
+//!
+//! This module also provides a Foreign Function Interface (FFI) for initialization from C/C++ code.
+//!
+//! The `RustFftC` struct uses `std::sync::Arc` for thread-safe reference-counting.
+
 use rustfft::{num_complex::Complex, Fft, FftPlanner};
 use std::ptr;
 use std::slice;
